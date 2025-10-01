@@ -10,6 +10,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Arial', sans-serif;
+            touch-action: manipulation; /* Improve touch responsiveness */
         }
 
         body {
@@ -19,12 +20,13 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
+            overflow-x: hidden;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             width: 100%;
             background-color: #002868;
             padding: 10px;
@@ -34,9 +36,9 @@
 
         .flag-container {
             position: relative;
-            height: 100px;
+            height: 80px;
             margin: 10px auto;
-            width: 200px;
+            width: 160px;
             overflow: hidden;
             border: 2px solid #BF0A30; /* Red */
         }
@@ -100,38 +102,47 @@
 
         h1 {
             color: white;
-            margin: 10px 0;
-            font-size: 2.5rem;
+            margin: 8px 0;
+            font-size: 1.8rem;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .campaign-message {
             color: white;
-            font-size: 1.5rem;
-            margin: 10px 0;
+            font-size: 1.2rem;
+            margin: 8px 0;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .difficulty-badge {
             background-color: #BF0A30;
             color: white;
-            padding: 5px 10px;
+            padding: 4px 8px;
             border-radius: 15px;
-            font-size: 0.9rem;
-            margin-left: 10px;
+            font-size: 0.8rem;
+            margin-left: 8px;
             display: inline-block;
         }
 
         .game-container {
             display: flex;
-            gap: 20px;
-            max-width: 800px;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 100%;
             width: 100%;
         }
 
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
         .game-board {
-            width: 300px;
-            height: 600px;
+            width: 100%;
+            max-width: 300px;
+            height: 500px;
             background-color: #002868;
             border: 3px solid #BF0A30;
             display: grid;
@@ -165,67 +176,71 @@
         }
 
         .game-info {
-            flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            width: 100%;
+            max-width: 300px;
         }
 
         .info-panel {
             background-color: #002868;
             border: 2px solid #BF0A30;
             border-radius: 10px;
-            padding: 15px;
+            padding: 12px;
             color: white;
         }
 
         .info-panel h2 {
             color: white;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             border-bottom: 1px solid #BF0A30;
-            padding-bottom: 5px;
+            padding-bottom: 4px;
+            font-size: 1.2rem;
         }
 
         .next-piece {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             display: grid;
             grid-template-rows: repeat(4, 1fr);
             grid-template-columns: repeat(4, 1fr);
             gap: 2px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .controls {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 10px;
+            gap: 8px;
+            margin-top: 8px;
         }
 
         button {
             background-color: #BF0A30;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 8px;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
             transition: background-color 0.3s;
+            font-size: 0.9rem;
         }
 
-        button:hover {
+        button:hover, button:active {
             background-color: #E31C3D;
         }
 
         .instructions {
-            margin-top: 20px;
+            margin-top: 15px;
             text-align: center;
-            max-width: 800px;
+            max-width: 100%;
+            font-size: 0.9rem;
         }
 
         .instructions p {
-            margin: 5px 0;
+            margin: 4px 0;
         }
 
         .game-over {
@@ -233,27 +248,29 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: rgba(0, 40, 104, 0.9);
-            padding: 30px;
+            background-color: rgba(0, 40, 104, 0.95);
+            padding: 20px;
             border-radius: 10px;
             border: 3px solid #BF0A30;
             text-align: center;
             z-index: 10;
             display: none;
+            width: 90%;
+            max-width: 300px;
         }
 
         .level-indicator {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: bold;
             color: white;
         }
 
         .progress-bar {
             width: 100%;
-            height: 20px;
+            height: 16px;
             background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            margin-top: 10px;
+            border-radius: 8px;
+            margin-top: 8px;
             overflow: hidden;
         }
 
@@ -290,17 +307,126 @@
             color: #BF0A30;
             font-weight: bold;
             text-align: center;
-            margin: 10px 0;
+            margin: 8px 0;
+            font-size: 0.9rem;
         }
 
-        @media (max-width: 768px) {
+        .audio-notice {
+            background-color: #BF0A30;
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 8px;
+            text-align: center;
+            animation: pulse 2s infinite;
+            font-size: 0.9rem;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        /* Mobile Controls */
+        .mobile-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .mobile-control-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .mobile-btn {
+            flex: 1;
+            background-color: #BF0A30;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .mobile-btn:active {
+            background-color: #E31C3D;
+            transform: scale(0.95);
+        }
+
+        .mobile-rotate {
+            background-color: #002868;
+            border: 2px solid white;
+        }
+
+        .mobile-drop {
+            background-color: #BF0A30;
+        }
+
+        .mobile-left, .mobile-right {
+            background-color: #002868;
+            border: 2px solid #BF0A30;
+        }
+
+        .touch-instructions {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Desktop styles */
+        @media (min-width: 768px) {
             .game-container {
-                flex-direction: column;
-                align-items: center;
+                flex-direction: row;
+                justify-content: center;
+                max-width: 800px;
             }
             
-            .game-info {
-                width: 100%;
+            .game-area {
+                flex-direction: row;
+            }
+            
+            .mobile-controls {
+                display: none;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .campaign-message {
+                font-size: 1.5rem;
+            }
+            
+            .flag-container {
+                height: 100px;
+                width: 200px;
+            }
+        }
+
+        /* Hide mobile controls on desktop */
+        @media (min-width: 768px) {
+            .mobile-controls {
+                display: none;
+            }
+        }
+
+        /* Show mobile controls on mobile */
+        @media (max-width: 767px) {
+            .mobile-controls {
+                display: flex;
             }
         }
     </style>
@@ -316,54 +442,73 @@
         </div>
         <h1>Patriot's Challenge <span class="difficulty-badge">HARD MODE</span></h1>
         <div class="campaign-message">Vote for Roy Timmons Oklahoma State Representative!</div>
+        <div class="audio-notice" id="audio-notice">Tap or press any key to start the music!</div>
     </div>
 
     <div class="game-container">
-        <div class="game-board" id="board">
-            <!-- Game board cells will be generated with JavaScript -->
-            <div class="difficulty-effects" id="difficulty-effects"></div>
-        </div>
-        
-        <div class="game-info">
-            <div class="info-panel">
-                <h2>Game Info</h2>
-                <p>Score: <span id="score">0</span></p>
-                <p>Level: <span id="level">1</span> / 20</p>
-                <p>Lines: <span id="lines">0</span></p>
-                <div class="level-indicator">Level Progress</div>
-                <div class="progress-bar">
-                    <div class="progress" id="level-progress"></div>
-                </div>
-                <p class="warning" id="warning-message"></p>
+        <div class="game-area">
+            <div class="game-board" id="board">
+                <!-- Game board cells will be generated with JavaScript -->
+                <div class="difficulty-effects" id="difficulty-effects"></div>
             </div>
             
-            <div class="info-panel">
-                <h2>Next Piece</h2>
-                <div class="next-piece" id="next-piece">
-                    <!-- Next piece preview will be generated with JavaScript -->
+            <div class="game-info">
+                <div class="info-panel">
+                    <h2>Game Info</h2>
+                    <p>Score: <span id="score">0</span></p>
+                    <p>Level: <span id="level">1</span> / 20</p>
+                    <p>Lines: <span id="lines">0</span></p>
+                    <div class="level-indicator">Level Progress</div>
+                    <div class="progress-bar">
+                        <div class="progress" id="level-progress"></div>
+                    </div>
+                    <p class="warning" id="warning-message"></p>
                 </div>
-            </div>
-            
-            <div class="info-panel">
-                <h2>Controls</h2>
-                <p>← → : Move Left/Right</p>
-                <p>↑ : Rotate</p>
-                <p>↓ : Soft Drop</p>
-                <p>Space : Hard Drop</p>
-                <p>P : Pause</p>
                 
-                <div class="controls">
-                    <button id="pause-btn">Pause</button>
-                    <button id="restart-btn">Restart</button>
-                    <button id="sound-btn">Sound: On</button>
+                <div class="info-panel">
+                    <h2>Next Piece</h2>
+                    <div class="next-piece" id="next-piece">
+                        <!-- Next piece preview will be generated with JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="info-panel">
+                    <h2>Controls</h2>
+                    <p>← → : Move Left/Right</p>
+                    <p>↑ : Rotate</p>
+                    <p>↓ : Soft Drop</p>
+                    <p>Space : Hard Drop</p>
+                    <p>P : Pause</p>
+                    
+                    <div class="controls">
+                        <button id="pause-btn">Pause</button>
+                        <button id="restart-btn">Restart</button>
+                        <button id="sound-btn">Sound: On</button>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Mobile Touch Controls -->
+    <div class="mobile-controls">
+        <div class="mobile-control-row">
+            <div class="mobile-btn mobile-rotate" id="mobile-rotate">ROTATE</div>
+        </div>
+        <div class="mobile-control-row">
+            <div class="mobile-btn mobile-left" id="mobile-left">← LEFT</div>
+            <div class="mobile-btn mobile-drop" id="mobile-drop">DROP</div>
+            <div class="mobile-btn mobile-right" id="mobile-right">RIGHT →</div>
+        </div>
+    </div>
+
+    <div class="touch-instructions">
+        Tap buttons to control the piece | Tap game board to rotate
     </div>
 
     <div class="instructions">
         <p>Clear lines to score points and advance through 20 levels of extreme patriotic challenge!</p>
-        <p class="warning">Patriots Never Quit!</p>
+        <p class="warning">WARNING: This is HARD MODE - pieces fall faster and difficulty increases rapidly!</p>
     </div>
 
     <div class="game-over" id="game-over">
@@ -399,6 +544,7 @@
         let dropStart = Date.now();
         let soundEnabled = true;
         let lastWarningLevel = 0;
+        let audioStarted = false;
 
         // Tetromino shapes with red, white, and blue colors
         const PIECES = [
@@ -479,6 +625,13 @@
         const difficultyEffects = document.getElementById('difficulty-effects');
         const flagCanton = document.getElementById('flag-canton');
         const campaignSong = document.getElementById('campaign-song');
+        const audioNotice = document.getElementById('audio-notice');
+
+        // Mobile control elements
+        const mobileRotateBtn = document.getElementById('mobile-rotate');
+        const mobileLeftBtn = document.getElementById('mobile-left');
+        const mobileRightBtn = document.getElementById('mobile-right');
+        const mobileDropBtn = document.getElementById('mobile-drop');
 
         // Initialize the game
         function init() {
@@ -489,23 +642,134 @@
             updateStats();
             createFlagStars();
             
-            // Start playing the campaign song
-            if (soundEnabled) {
-                campaignSong.play().catch(e => {
-                    console.log("Audio play failed:", e);
-                    // Some browsers require user interaction first
-                });
-            }
+            // Add event listeners for audio start
+            document.addEventListener('keydown', startAudioOnInteraction);
+            document.addEventListener('click', startAudioOnInteraction);
+            
+            // Add mobile touch event listeners
+            setupMobileControls();
             
             // Game loop
             gameLoop();
             
-            // Event listeners
+            // Event listeners for game controls
             document.addEventListener('keydown', handleKeyPress);
             pauseBtn.addEventListener('click', togglePause);
             restartBtn.addEventListener('click', restartGame);
             soundBtn.addEventListener('click', toggleSound);
             playAgainBtn.addEventListener('click', restartGame);
+        }
+
+        // Set up mobile touch controls
+        function setupMobileControls() {
+            // Rotate button
+            mobileRotateBtn.addEventListener('click', function() {
+                if (!audioStarted) startAudioOnInteraction({type: 'click'});
+                rotatePiece();
+                drawBoard();
+            });
+            
+            // Left button
+            mobileLeftBtn.addEventListener('click', function() {
+                if (!audioStarted) startAudioOnInteraction({type: 'click'});
+                movePiece(0, -1);
+                drawBoard();
+            });
+            
+            // Right button
+            mobileRightBtn.addEventListener('click', function() {
+                if (!audioStarted) startAudioOnInteraction({type: 'click'});
+                movePiece(0, 1);
+                drawBoard();
+            });
+            
+            // Drop button
+            mobileDropBtn.addEventListener('click', function() {
+                if (!audioStarted) startAudioOnInteraction({type: 'click'});
+                hardDrop();
+            });
+            
+            // Also allow tapping the game board to rotate
+            boardElement.addEventListener('click', function(e) {
+                if (!audioStarted) startAudioOnInteraction({type: 'click'});
+                // Only rotate if not clicking on a control button
+                if (e.target === boardElement || e.target.classList.contains('cell')) {
+                    rotatePiece();
+                    drawBoard();
+                }
+            });
+            
+            // Add swipe controls for left/right movement
+            let touchStartX = 0;
+            let touchStartY = 0;
+            
+            boardElement.addEventListener('touchstart', function(e) {
+                if (!audioStarted) startAudioOnInteraction({type: 'touchstart'});
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                e.preventDefault();
+            });
+            
+            boardElement.addEventListener('touchmove', function(e) {
+                e.preventDefault(); // Prevent scrolling
+            });
+            
+            boardElement.addEventListener('touchend', function(e) {
+                const touchEndX = e.changedTouches[0].clientX;
+                const touchEndY = e.changedTouches[0].clientY;
+                
+                const diffX = touchEndX - touchStartX;
+                const diffY = touchEndY - touchStartY;
+                
+                // If horizontal swipe is more significant than vertical swipe
+                if (Math.abs(diffX) > Math.abs(diffY)) {
+                    if (diffX > 30) { // Swipe right
+                        movePiece(0, 1);
+                    } else if (diffX < -30) { // Swipe left
+                        movePiece(0, -1);
+                    }
+                } else {
+                    if (diffY > 50) { // Swipe down - hard drop
+                        hardDrop();
+                    } else if (diffY < -30) { // Swipe up - rotate
+                        rotatePiece();
+                    }
+                }
+                
+                drawBoard();
+                e.preventDefault();
+            });
+        }
+
+        // Start audio on first user interaction
+        function startAudioOnInteraction(event) {
+            // Only start audio once
+            if (audioStarted) return;
+            
+            // Don't start audio if it's a game control key when audio hasn't started yet
+            if (event.type === 'keydown') {
+                const key = event.keyCode;
+                // If it's a game control key, don't start audio yet
+                if ([37, 38, 39, 40, 32, 80].includes(key)) {
+                    return;
+                }
+            }
+            
+            audioStarted = true;
+            
+            // Remove the event listeners
+            document.removeEventListener('keydown', startAudioOnInteraction);
+            document.removeEventListener('click', startAudioOnInteraction);
+            
+            // Hide the audio notice
+            audioNotice.style.display = 'none';
+            
+            // Start playing the campaign song
+            if (soundEnabled) {
+                campaignSong.play().catch(e => {
+                    console.log("Audio play failed:", e);
+                });
+            }
         }
 
         // Create the game board
@@ -652,6 +916,11 @@
         function movePiece(dRow, dCol) {
             if (isPaused || gameOver) return false;
             
+            // Start audio if it hasn't been started yet (for game control keys)
+            if (!audioStarted && (dRow !== 0 || dCol !== 0)) {
+                startAudioOnInteraction({type: 'keydown'});
+            }
+            
             // Test if the move is valid
             const testPiece = {
                 shape: currentPiece.shape,
@@ -677,6 +946,11 @@
         // Rotate the current piece
         function rotatePiece() {
             if (isPaused || gameOver) return;
+            
+            // Start audio if it hasn't been started yet
+            if (!audioStarted) {
+                startAudioOnInteraction({type: 'keydown'});
+            }
             
             // Create a rotated version of the piece
             const rows = currentPiece.shape.length;
@@ -920,7 +1194,7 @@
             } else {
                 gameOverElement.style.display = 'none';
                 dropStart = Date.now(); // Reset drop timer
-                if (soundEnabled) {
+                if (soundEnabled && audioStarted) {
                     campaignSong.play();
                 }
             }
@@ -931,7 +1205,7 @@
             soundEnabled = !soundEnabled;
             soundBtn.textContent = `Sound: ${soundEnabled ? 'On' : 'Off'}`;
             
-            if (soundEnabled) {
+            if (soundEnabled && audioStarted) {
                 campaignSong.play();
             } else {
                 campaignSong.pause();
@@ -970,8 +1244,8 @@
             // Reset difficulty effects
             difficultyEffects.style.opacity = '0';
             
-            // Restart music if sound is enabled
-            if (soundEnabled) {
+            // Restart music if sound is enabled and audio has been started
+            if (soundEnabled && audioStarted) {
                 campaignSong.currentTime = 0;
                 campaignSong.play();
             }
