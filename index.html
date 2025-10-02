@@ -445,7 +445,7 @@
         </div>
         <h1>Patriot's Challenge <span class="difficulty-badge">HARD MODE</span></h1>
         <div class="campaign-message">Vote for Roy Timmons Oklahoma State Representative!</div>
-        <div class="audio-notice" id="audio-notice">Tap here to start the music!</div>
+        <div class="audio-notice" id="audio-notice">Tap here to enable audio!</div>
     </div>
 
     <div class="game-container">
@@ -698,9 +698,9 @@
             // Hide the audio notice
             audioNotice.style.display = 'none';
             
-            // Create and start playing the campaign song
+            // Create and start playing the campaign song - USING THE CORRECT URL
             if (soundEnabled) {
-                campaignSong = new Audio("https://github.com/TitanBusinessPros/TBP-Images/raw/main/Vote%20for%20Roy%20Timmons.mp3");
+                campaignSong = new Audio("https://github.com/TitanBusinessPros/TBP-Images/raw/main/Vote-Song-Roy.mp3");
                 campaignSong.loop = true;
                 
                 // For mobile devices, we need to play audio in response to a user gesture
