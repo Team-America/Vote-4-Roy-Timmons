@@ -10,17 +10,17 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Arial', sans-serif;
-            touch-action: manipulation; /* Improve touch responsiveness */
+            touch-action: manipulation;
         }
 
         body {
-            background-color: #002868; /* Dark blue */
+            background-color: #002868;
             color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 10px;
+            padding: 15px;
             overflow-x: hidden;
         }
 
@@ -40,7 +40,7 @@
             margin: 10px auto;
             width: 160px;
             overflow: hidden;
-            border: 2px solid #BF0A30; /* Red */
+            border: 2px solid #BF0A30;
         }
 
         .flag-stripes {
@@ -64,7 +64,7 @@
             left: 0;
             width: 40%;
             height: 54%;
-            background-color: #002868; /* Blue */
+            background-color: #002868;
             display: grid;
             grid-template-rows: repeat(9, 1fr);
             grid-template-columns: repeat(11, 1fr);
@@ -92,12 +92,8 @@
         }
 
         @keyframes wave {
-            0% {
-                transform: translateX(-100%) skewX(-20deg);
-            }
-            100% {
-                transform: translateX(200%) skewX(-20deg);
-            }
+            0% { transform: translateX(-100%) skewX(-20deg); }
+            100% { transform: translateX(200%) skewX(-20deg); }
         }
 
         h1 {
@@ -130,6 +126,7 @@
             gap: 15px;
             max-width: 100%;
             width: 100%;
+            align-items: center;
         }
 
         .game-area {
@@ -137,6 +134,7 @@
             flex-direction: column;
             align-items: center;
             gap: 15px;
+            width: 100%;
         }
 
         .game-board {
@@ -237,6 +235,7 @@
             text-align: center;
             max-width: 100%;
             font-size: 0.9rem;
+            width: 100%;
         }
 
         .instructions p {
@@ -320,6 +319,11 @@
             text-align: center;
             animation: pulse 2s infinite;
             font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .audio-notice:active {
+            transform: scale(0.98);
         }
 
         @keyframes pulse {
@@ -384,6 +388,7 @@
             margin-top: 10px;
             font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.8);
+            width: 100%;
         }
 
         /* Desktop styles */
@@ -435,20 +440,17 @@
     <div class="header">
         <div class="flag-container">
             <div class="flag-stripes"></div>
-            <div class="flag-canton" id="flag-canton">
-                <!-- Stars will be generated with JavaScript in the correct pattern -->
-            </div>
+            <div class="flag-canton" id="flag-canton"></div>
             <div class="flag-wind-effect"></div>
         </div>
         <h1>Patriot's Challenge <span class="difficulty-badge">HARD MODE</span></h1>
         <div class="campaign-message">Vote for Roy Timmons Oklahoma State Representative!</div>
-        <div class="audio-notice" id="audio-notice">Tap or press any key to start the music!</div>
+        <div class="audio-notice" id="audio-notice">Tap here to start the music!</div>
     </div>
 
     <div class="game-container">
         <div class="game-area">
             <div class="game-board" id="board">
-                <!-- Game board cells will be generated with JavaScript -->
                 <div class="difficulty-effects" id="difficulty-effects"></div>
             </div>
             
@@ -467,9 +469,7 @@
                 
                 <div class="info-panel">
                     <h2>Next Piece</h2>
-                    <div class="next-piece" id="next-piece">
-                        <!-- Next piece preview will be generated with JavaScript -->
-                    </div>
+                    <div class="next-piece" id="next-piece"></div>
                 </div>
                 
                 <div class="info-panel">
@@ -518,12 +518,6 @@
         <button id="play-again-btn">Play Again</button>
     </div>
 
-    <!-- Audio element for the campaign song -->
-    <audio id="campaign-song" loop>
-        <source src="https://github.com/TitanBusinessPros/TBP-Images/raw/main/Vote%20for%20Roy%20Timmons.mp3" type="audio/mp3">
-        Your browser does not support the audio element.
-    </audio>
-
     <script>
         // Game constants
         const COLS = 10;
@@ -540,7 +534,7 @@
         let lines = 0;
         let gameOver = false;
         let isPaused = false;
-        let dropInterval = 800; // Initial drop speed (ms) - FASTER THAN NORMAL
+        let dropInterval = 800;
         let dropStart = Date.now();
         let soundEnabled = true;
         let lastWarningLevel = 0;
@@ -556,14 +550,14 @@
                     [0,0,0,0]
                 ], 
                 color: 'red' 
-            },    // I
+            },
             { 
                 shape: [
                     [1,1],
                     [1,1]
                 ], 
                 color: 'white' 
-            }, // O
+            },
             { 
                 shape: [
                     [0,1,0],
@@ -571,7 +565,7 @@
                     [0,0,0]
                 ], 
                 color: 'blue' 
-            }, // T
+            },
             { 
                 shape: [
                     [1,1,0],
@@ -579,7 +573,7 @@
                     [0,0,0]
                 ], 
                 color: 'red' 
-            }, // Z
+            },
             { 
                 shape: [
                     [0,1,1],
@@ -587,7 +581,7 @@
                     [0,0,0]
                 ], 
                 color: 'white' 
-            }, // S
+            },
             { 
                 shape: [
                     [1,0,0],
@@ -595,7 +589,7 @@
                     [0,0,0]
                 ], 
                 color: 'blue' 
-            }, // L
+            },
             { 
                 shape: [
                     [0,0,1],
@@ -603,7 +597,7 @@
                     [0,0,0]
                 ], 
                 color: 'red' 
-            }  // J
+            }
         ];
 
         // DOM elements
@@ -624,7 +618,6 @@
         const warningMessage = document.getElementById('warning-message');
         const difficultyEffects = document.getElementById('difficulty-effects');
         const flagCanton = document.getElementById('flag-canton');
-        const campaignSong = document.getElementById('campaign-song');
         const audioNotice = document.getElementById('audio-notice');
 
         // Mobile control elements
@@ -632,6 +625,9 @@
         const mobileLeftBtn = document.getElementById('mobile-left');
         const mobileRightBtn = document.getElementById('mobile-right');
         const mobileDropBtn = document.getElementById('mobile-drop');
+
+        // Audio element - created dynamically to ensure it works on mobile
+        let campaignSong = null;
 
         // Initialize the game
         function init() {
@@ -643,8 +639,7 @@
             createFlagStars();
             
             // Add event listeners for audio start
-            document.addEventListener('keydown', startAudioOnInteraction);
-            document.addEventListener('click', startAudioOnInteraction);
+            setupAudioStart();
             
             // Add mobile touch event listeners
             setupMobileControls();
@@ -660,39 +655,99 @@
             playAgainBtn.addEventListener('click', restartGame);
         }
 
+        // Set up audio to start on user interaction
+        function setupAudioStart() {
+            // Make the audio notice clickable to start audio
+            audioNotice.addEventListener('click', function() {
+                startAudio();
+            });
+            
+            // Also start audio on any game interaction
+            document.addEventListener('click', startAudioOnInteraction);
+            document.addEventListener('keydown', startAudioOnInteraction);
+            document.addEventListener('touchstart', startAudioOnInteraction);
+        }
+
+        // Start audio on any user interaction
+        function startAudioOnInteraction(event) {
+            // Don't start audio if it's already started
+            if (audioStarted) return;
+            
+            // Don't start audio if it's a game control key when audio hasn't started yet
+            if (event.type === 'keydown') {
+                const key = event.keyCode;
+                if ([37, 38, 39, 40, 32, 80].includes(key)) {
+                    return;
+                }
+            }
+            
+            startAudio();
+        }
+
+        // Start the audio playback
+        function startAudio() {
+            if (audioStarted) return;
+            
+            audioStarted = true;
+            
+            // Remove the event listeners
+            document.removeEventListener('click', startAudioOnInteraction);
+            document.removeEventListener('keydown', startAudioOnInteraction);
+            document.removeEventListener('touchstart', startAudioOnInteraction);
+            
+            // Hide the audio notice
+            audioNotice.style.display = 'none';
+            
+            // Create and start playing the campaign song
+            if (soundEnabled) {
+                campaignSong = new Audio("https://github.com/TitanBusinessPros/TBP-Images/raw/main/Vote%20for%20Roy%20Timmons.mp3");
+                campaignSong.loop = true;
+                
+                // For mobile devices, we need to play audio in response to a user gesture
+                campaignSong.play().then(() => {
+                    console.log("Audio started successfully");
+                }).catch(error => {
+                    console.log("Audio play failed:", error);
+                    // If autoplay fails, show the notice again
+                    audioNotice.style.display = 'block';
+                    audioNotice.textContent = "Tap to enable audio";
+                    audioStarted = false;
+                });
+            }
+        }
+
         // Set up mobile touch controls
         function setupMobileControls() {
             // Rotate button
             mobileRotateBtn.addEventListener('click', function() {
-                if (!audioStarted) startAudioOnInteraction({type: 'click'});
+                if (!audioStarted) startAudio();
                 rotatePiece();
                 drawBoard();
             });
             
             // Left button
             mobileLeftBtn.addEventListener('click', function() {
-                if (!audioStarted) startAudioOnInteraction({type: 'click'});
+                if (!audioStarted) startAudio();
                 movePiece(0, -1);
                 drawBoard();
             });
             
             // Right button
             mobileRightBtn.addEventListener('click', function() {
-                if (!audioStarted) startAudioOnInteraction({type: 'click'});
+                if (!audioStarted) startAudio();
                 movePiece(0, 1);
                 drawBoard();
             });
             
             // Drop button
             mobileDropBtn.addEventListener('click', function() {
-                if (!audioStarted) startAudioOnInteraction({type: 'click'});
+                if (!audioStarted) startAudio();
                 hardDrop();
             });
             
             // Also allow tapping the game board to rotate
             boardElement.addEventListener('click', function(e) {
-                if (!audioStarted) startAudioOnInteraction({type: 'click'});
-                // Only rotate if not clicking on a control button
+                if (!audioStarted) startAudio();
                 if (e.target === boardElement || e.target.classList.contains('cell')) {
                     rotatePiece();
                     drawBoard();
@@ -704,14 +759,14 @@
             let touchStartY = 0;
             
             boardElement.addEventListener('touchstart', function(e) {
-                if (!audioStarted) startAudioOnInteraction({type: 'touchstart'});
+                if (!audioStarted) startAudio();
                 touchStartX = e.touches[0].clientX;
                 touchStartY = e.touches[0].clientY;
                 e.preventDefault();
             });
             
             boardElement.addEventListener('touchmove', function(e) {
-                e.preventDefault(); // Prevent scrolling
+                e.preventDefault();
             });
             
             boardElement.addEventListener('touchend', function(e) {
@@ -721,17 +776,16 @@
                 const diffX = touchEndX - touchStartX;
                 const diffY = touchEndY - touchStartY;
                 
-                // If horizontal swipe is more significant than vertical swipe
                 if (Math.abs(diffX) > Math.abs(diffY)) {
-                    if (diffX > 30) { // Swipe right
+                    if (diffX > 30) {
                         movePiece(0, 1);
-                    } else if (diffX < -30) { // Swipe left
+                    } else if (diffX < -30) {
                         movePiece(0, -1);
                     }
                 } else {
-                    if (diffY > 50) { // Swipe down - hard drop
+                    if (diffY > 50) {
                         hardDrop();
-                    } else if (diffY < -30) { // Swipe up - rotate
+                    } else if (diffY < -30) {
                         rotatePiece();
                     }
                 }
@@ -739,37 +793,6 @@
                 drawBoard();
                 e.preventDefault();
             });
-        }
-
-        // Start audio on first user interaction
-        function startAudioOnInteraction(event) {
-            // Only start audio once
-            if (audioStarted) return;
-            
-            // Don't start audio if it's a game control key when audio hasn't started yet
-            if (event.type === 'keydown') {
-                const key = event.keyCode;
-                // If it's a game control key, don't start audio yet
-                if ([37, 38, 39, 40, 32, 80].includes(key)) {
-                    return;
-                }
-            }
-            
-            audioStarted = true;
-            
-            // Remove the event listeners
-            document.removeEventListener('keydown', startAudioOnInteraction);
-            document.removeEventListener('click', startAudioOnInteraction);
-            
-            // Hide the audio notice
-            audioNotice.style.display = 'none';
-            
-            // Start playing the campaign song
-            if (soundEnabled) {
-                campaignSong.play().catch(e => {
-                    console.log("Audio play failed:", e);
-                });
-            }
         }
 
         // Create the game board
@@ -780,7 +803,6 @@
                 for (let c = 0; c < COLS; c++) {
                     board[r][c] = EMPTY;
                     
-                    // Create cell element
                     const cell = document.createElement('div');
                     cell.className = 'cell';
                     cell.id = `${r}-${c}`;
@@ -793,28 +815,15 @@
         function createFlagStars() {
             flagCanton.innerHTML = '';
             
-            // Create stars in the correct pattern for 50 stars
-            // The American flag has 50 stars arranged in:
-            // - 5 rows of 6 stars (30 stars)
-            // - 4 rows of 5 stars (20 stars)
-            // Total: 50 stars
-            
-            // We'll use a 9x11 grid (9 rows, 11 columns)
             for (let row = 0; row < 9; row++) {
                 for (let col = 0; col < 11; col++) {
-                    // Determine if this position should have a star
                     let shouldHaveStar = false;
                     
-                    // For rows with 6 stars (rows 0, 2, 4, 6, 8)
                     if (row % 2 === 0) {
-                        // Place stars at columns 1, 3, 5, 7, 9 (6 stars)
                         if (col % 2 === 1) {
                             shouldHaveStar = true;
                         }
-                    } 
-                    // For rows with 5 stars (rows 1, 3, 5, 7)
-                    else {
-                        // Place stars at columns 2, 4, 6, 8, 10 (5 stars)
+                    } else {
                         if (col % 2 === 0 && col > 0) {
                             shouldHaveStar = true;
                         }
@@ -823,7 +832,6 @@
                     if (shouldHaveStar) {
                         const star = document.createElement('div');
                         star.className = 'flag-star';
-                        // Position the star in the grid
                         star.style.gridRow = row + 1;
                         star.style.gridColumn = col + 1;
                         flagCanton.appendChild(star);
@@ -846,7 +854,7 @@
         function getRandomPiece() {
             const piece = PIECES[Math.floor(Math.random() * PIECES.length)];
             return {
-                shape: JSON.parse(JSON.stringify(piece.shape)), // Deep copy
+                shape: JSON.parse(JSON.stringify(piece.shape)),
                 color: piece.color,
                 row: 0,
                 col: Math.floor(COLS / 2) - Math.floor(piece.shape[0].length / 2)
@@ -855,7 +863,6 @@
 
         // Draw the game board
         function drawBoard() {
-            // Clear the board first
             for (let r = 0; r < ROWS; r++) {
                 for (let c = 0; c < COLS; c++) {
                     const cell = document.getElementById(`${r}-${c}`);
@@ -867,7 +874,6 @@
                 }
             }
             
-            // Draw current piece
             if (currentPiece) {
                 drawPiece(currentPiece);
             }
@@ -892,12 +898,10 @@
 
         // Draw the next piece preview
         function drawNextPiece() {
-            // Clear next piece area
             nextPieceElement.innerHTML = '';
             
             if (!nextPiece) return;
             
-            // Create cells for the next piece preview
             for (let r = 0; r < 4; r++) {
                 for (let c = 0; c < 4; c++) {
                     const cell = document.createElement('div');
@@ -916,12 +920,10 @@
         function movePiece(dRow, dCol) {
             if (isPaused || gameOver) return false;
             
-            // Start audio if it hasn't been started yet (for game control keys)
-            if (!audioStarted && (dRow !== 0 || dCol !== 0)) {
-                startAudioOnInteraction({type: 'keydown'});
+            if (!audioStarted) {
+                startAudio();
             }
             
-            // Test if the move is valid
             const testPiece = {
                 shape: currentPiece.shape,
                 color: currentPiece.color,
@@ -930,12 +932,10 @@
             };
             
             if (isValidMove(testPiece)) {
-                // Move is valid, update the piece
                 currentPiece.row = testPiece.row;
                 currentPiece.col = testPiece.col;
                 return true;
             } else if (dRow > 0) {
-                // If moving down is invalid, lock the piece
                 lockPiece();
                 return false;
             }
@@ -947,12 +947,10 @@
         function rotatePiece() {
             if (isPaused || gameOver) return;
             
-            // Start audio if it hasn't been started yet
             if (!audioStarted) {
-                startAudioOnInteraction({type: 'keydown'});
+                startAudio();
             }
             
-            // Create a rotated version of the piece
             const rows = currentPiece.shape.length;
             const cols = currentPiece.shape[0].length;
             const newShape = [];
@@ -964,7 +962,6 @@
                 }
             }
             
-            // Test if the rotated piece can be placed
             const testPiece = {
                 shape: newShape,
                 color: currentPiece.color,
@@ -985,12 +982,10 @@
                         const newRow = piece.row + r;
                         const newCol = piece.col + c;
                         
-                        // Check boundaries
                         if (newRow < 0 || newRow >= ROWS || newCol < 0 || newCol >= COLS) {
                             return false;
                         }
                         
-                        // Check collision with existing pieces
                         if (newRow >= 0 && board[newRow][newCol] !== EMPTY) {
                             return false;
                         }
@@ -1003,7 +998,6 @@
 
         // Lock the current piece and generate a new one
         function lockPiece() {
-            // Add piece to the board
             for (let r = 0; r < currentPiece.shape.length; r++) {
                 for (let c = 0; c < currentPiece.shape[r].length; c++) {
                     if (currentPiece.shape[r][c]) {
@@ -1017,15 +1011,12 @@
                 }
             }
             
-            // Check for completed lines
             checkLines();
             
-            // Generate new piece
             currentPiece = nextPiece;
             nextPiece = getRandomPiece();
             drawNextPiece();
             
-            // Check if game is over (new piece can't be placed)
             if (!isValidMove(currentPiece)) {
                 gameOver = true;
                 showGameOver(false);
@@ -1038,35 +1029,30 @@
             
             for (let r = ROWS - 1; r >= 0; r--) {
                 if (board[r].every(cell => cell !== EMPTY)) {
-                    // Remove the line
                     for (let c = 0; c < COLS; c++) {
                         board[r][c] = EMPTY;
                     }
                     
-                    // Move all lines above down
                     for (let y = r; y > 0; y--) {
                         for (let c = 0; c < COLS; c++) {
                             board[y][c] = board[y-1][c];
                         }
                     }
                     
-                    // Clear the top line
                     for (let c = 0; c < COLS; c++) {
                         board[0][c] = EMPTY;
                     }
                     
                     linesCleared++;
-                    r++; // Check the same row again after shifting
+                    r++;
                 }
             }
             
             if (linesCleared > 0) {
-                // Update score and lines
                 updateScore(linesCleared);
                 lines += linesCleared;
                 
-                // Check for level up
-                const newLevel = Math.floor(lines / 5) + 1; // Level up every 5 lines (harder)
+                const newLevel = Math.floor(lines / 5) + 1;
                 if (newLevel > level && newLevel <= 20) {
                     level = newLevel;
                     updateLevel();
@@ -1078,17 +1064,14 @@
 
         // Update the score based on lines cleared
         function updateScore(linesCleared) {
-            // More points for clearing multiple lines at once
-            const points = [0, 100, 300, 500, 800]; // Points for 0, 1, 2, 3, 4 lines
+            const points = [0, 100, 300, 500, 800];
             score += points[linesCleared] * level;
         }
 
         // Update the level and adjust game speed
         function updateLevel() {
-            // Increase speed more aggressively with each level
             dropInterval = Math.max(100, 800 - (level - 1) * 50);
             
-            // Show warning for high levels
             if (level >= 10 && lastWarningLevel < 10) {
                 showWarning("EXTREME SPEED! Level 10+");
                 lastWarningLevel = 10;
@@ -1100,7 +1083,6 @@
                 lastWarningLevel = 18;
             }
             
-            // Add visual effects for higher levels
             if (level >= 10) {
                 difficultyEffects.style.opacity = '0.1';
                 difficultyEffects.style.background = 'radial-gradient(circle, rgba(191,10,48,0.3) 0%, rgba(0,40,104,0) 70%)';
@@ -1114,7 +1096,6 @@
                 }, 500);
             }
             
-            // Update level progress
             const progress = ((lines % 5) / 5) * 100;
             levelProgressElement.style.width = `${progress}%`;
         }
@@ -1139,25 +1120,24 @@
             if (gameOver) return;
             
             switch(event.keyCode) {
-                case 37: // Left arrow
+                case 37:
                     movePiece(0, -1);
                     break;
-                case 39: // Right arrow
+                case 39:
                     movePiece(0, 1);
                     break;
-                case 40: // Down arrow
+                case 40:
                     movePiece(1, 0);
-                    // Add score for soft drop in hard mode
                     score += 1;
                     updateStats();
                     break;
-                case 38: // Up arrow
+                case 38:
                     rotatePiece();
                     break;
-                case 32: // Space
+                case 32:
                     hardDrop();
                     break;
-                case 80: // P
+                case 80:
                     togglePause();
                     break;
             }
@@ -1171,12 +1151,10 @@
             
             let dropDistance = 0;
             
-            // Move down until we hit something
             while (movePiece(1, 0)) {
                 dropDistance++;
             }
             
-            // Add score for hard drop based on distance
             score += dropDistance * 2;
             updateStats();
             drawBoard();
@@ -1190,11 +1168,11 @@
             if (isPaused) {
                 document.getElementById('game-over-title').textContent = 'Game Paused';
                 gameOverElement.style.display = 'block';
-                campaignSong.pause();
+                if (campaignSong) campaignSong.pause();
             } else {
                 gameOverElement.style.display = 'none';
-                dropStart = Date.now(); // Reset drop timer
-                if (soundEnabled && audioStarted) {
+                dropStart = Date.now();
+                if (soundEnabled && audioStarted && campaignSong) {
                     campaignSong.play();
                 }
             }
@@ -1205,9 +1183,9 @@
             soundEnabled = !soundEnabled;
             soundBtn.textContent = `Sound: ${soundEnabled ? 'On' : 'Off'}`;
             
-            if (soundEnabled && audioStarted) {
+            if (soundEnabled && audioStarted && campaignSong) {
                 campaignSong.play();
-            } else {
+            } else if (campaignSong) {
                 campaignSong.pause();
             }
         }
@@ -1219,13 +1197,11 @@
             finalLevelElement.textContent = level;
             gameOverElement.style.display = 'block';
             
-            // Pause music on game over
-            campaignSong.pause();
+            if (campaignSong) campaignSong.pause();
         }
 
         // Restart the game
         function restartGame() {
-            // Reset game state
             board = [];
             currentPiece = null;
             nextPiece = null;
@@ -1238,22 +1214,17 @@
             dropStart = Date.now();
             lastWarningLevel = 0;
             
-            // Clear the board
             boardElement.innerHTML = '';
             
-            // Reset difficulty effects
             difficultyEffects.style.opacity = '0';
             
-            // Restart music if sound is enabled and audio has been started
-            if (soundEnabled && audioStarted) {
+            if (soundEnabled && audioStarted && campaignSong) {
                 campaignSong.currentTime = 0;
                 campaignSong.play();
             }
             
-            // Reinitialize the game
             init();
             
-            // Hide game over screen
             gameOverElement.style.display = 'none';
         }
 
