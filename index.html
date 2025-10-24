@@ -474,9 +474,9 @@
                 
                 <div class="info-panel">
                     <h2>Controls</h2>
-                    <p>← → : Move Left/Right</p>
-                    <p>↑ : Rotate</p>
-                    <p>↓ : Soft Drop</p>
+                    <p>â† â†’ : Move Left/Right</p>
+                    <p>â†‘ : Rotate</p>
+                    <p>â†“ : Soft Drop</p>
                     <p>Space : Hard Drop</p>
                     <p>P : Pause</p>
                     
@@ -496,9 +496,9 @@
             <div class="mobile-btn mobile-rotate" id="mobile-rotate">ROTATE</div>
         </div>
         <div class="mobile-control-row">
-            <div class="mobile-btn mobile-left" id="mobile-left">← LEFT</div>
+            <div class="mobile-btn mobile-left" id="mobile-left">â† LEFT</div>
             <div class="mobile-btn mobile-drop" id="mobile-drop">DROP</div>
-            <div class="mobile-btn mobile-right" id="mobile-right">RIGHT →</div>
+            <div class="mobile-btn mobile-right" id="mobile-right">RIGHT â†’</div>
         </div>
     </div>
 
@@ -718,55 +718,94 @@
 
         // Set up mobile touch controls
         function setupMobileControls() {
-            // Rotate button
-            mobileRotateBtn.addEventListener('click', function() {
-                if (!audioStarted) startAudio();
-                rotatePiece();
-                drawBoard();
-            });
+            let lastActionTime = 0;
+            const actionCooldown = 150; // Milliseconds between actions to prevent accidental rapid inputs
             
-            // Left button
-            mobileLeftBtn.addEventListener('click', function() {
-                if (!audioStarted) startAudio();
-                movePiece(0, -1);
-                drawBoard();
-            });
+            function canPerformAction() {
+                const now = Date.now();
+                if (now - lastActionTime < actionCooldown) {
+                    return false;
+                }
+                lastActionTime = now;
+                return true;
+            }
             
-            // Right button
-            mobileRightBtn.addEventListener('click', function() {
+            // Rotate button - use touchstart for better mobile responsiveness
+            mobileRotateBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
                 if (!audioStarted) startAudio();
-                movePiece(0, 1);
-                drawBoard();
-            });
-            
-            // Drop button
-            mobileDropBtn.addEventListener('click', function() {
-                if (!audioStarted) startAudio();
-                hardDrop();
-            });
-            
-            // Also allow tapping the game board to rotate
-            boardElement.addEventListener('click', function(e) {
-                if (!audioStarted) startAudio();
-                if (e.target === boardElement || e.target.classList.contains('cell')) {
+                if (canPerformAction()) {
                     rotatePiece();
                     drawBoard();
                 }
             });
             
-            // Add swipe controls for left/right movement
+            // Prevent click event from also firing
+            mobileRotateBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+            });
+            
+            // Left button
+            mobileLeftBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                if (!audioStarted) startAudio();
+                if (canPerformAction()) {
+                    movePiece(0, -1);
+                    drawBoard();
+                }
+            });
+            
+            mobileLeftBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+            });
+            
+            // Right button
+            mobileRightBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                if (!audioStarted) startAudio();
+                if (canPerformAction()) {
+                    movePiece(0, 1);
+                    drawBoard();
+                }
+            });
+            
+            mobileRightBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+            });
+            
+            // Drop button
+            mobileDropBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                if (!audioStarted) startAudio();
+                if (canPerformAction()) {
+                    hardDrop();
+                }
+            });
+            
+            mobileDropBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+            });
+            
+            // Board tap to rotate - with better touch handling
             let touchStartX = 0;
             let touchStartY = 0;
+            let touchMoved = false;
             
             boardElement.addEventListener('touchstart', function(e) {
                 if (!audioStarted) startAudio();
                 touchStartX = e.touches[0].clientX;
                 touchStartY = e.touches[0].clientY;
-                e.preventDefault();
+                touchMoved = false;
             });
             
             boardElement.addEventListener('touchmove', function(e) {
-                e.preventDefault();
+                const moveX = Math.abs(e.touches[0].clientX - touchStartX);
+                const moveY = Math.abs(e.touches[0].clientY - touchStartY);
+                
+                // If moved more than 10 pixels, consider it a swipe not a tap
+                if (moveX > 10 || moveY > 10) {
+                    touchMoved = true;
+                }
             });
             
             boardElement.addEventListener('touchend', function(e) {
@@ -776,21 +815,37 @@
                 const diffX = touchEndX - touchStartX;
                 const diffY = touchEndY - touchStartY;
                 
-                if (Math.abs(diffX) > Math.abs(diffY)) {
-                    if (diffX > 30) {
-                        movePiece(0, 1);
-                    } else if (diffX < -30) {
-                        movePiece(0, -1);
+                // Only process swipes if significant movement occurred
+                if (touchMoved) {
+                    // Increased thresholds to prevent accidental inputs
+                    // Horizontal swipes (left/right)
+                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 60) {
+                        if (diffX > 0) {
+                            movePiece(0, 1);
+                        } else {
+                            movePiece(0, -1);
+                        }
+                        drawBoard();
+                    }
+                    // Vertical swipes - REMOVED down swipe to prevent accidental drops
+                    // Only up swipe for rotate
+                    else if (Math.abs(diffY) > Math.abs(diffX) && diffY < -60) {
+                        rotatePiece();
+                        drawBoard();
                     }
                 } else {
-                    if (diffY > 50) {
-                        hardDrop();
-                    } else if (diffY < -30) {
+                    // Simple tap with no movement - rotate the piece
+                    if (canPerformAction() && (e.target === boardElement || e.target.classList.contains('cell'))) {
                         rotatePiece();
+                        drawBoard();
                     }
                 }
                 
-                drawBoard();
+                e.preventDefault();
+            });
+            
+            // Prevent click events on the board when on mobile to avoid double-actions
+            boardElement.addEventListener('click', function(e) {
                 e.preventDefault();
             });
         }
@@ -1120,24 +1175,29 @@
             if (gameOver) return;
             
             switch(event.keyCode) {
-                case 37:
+                case 37: // Left arrow
+                    event.preventDefault();
                     movePiece(0, -1);
                     break;
-                case 39:
+                case 39: // Right arrow
+                    event.preventDefault();
                     movePiece(0, 1);
                     break;
-                case 40:
+                case 40: // Down arrow
+                    event.preventDefault();
                     movePiece(1, 0);
                     score += 1;
                     updateStats();
                     break;
-                case 38:
+                case 38: // Up arrow
+                    event.preventDefault();
                     rotatePiece();
                     break;
-                case 32:
+                case 32: // Space bar
+                    event.preventDefault();
                     hardDrop();
                     break;
-                case 80:
+                case 80: // P key
                     togglePause();
                     break;
             }
